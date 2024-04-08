@@ -1,23 +1,29 @@
+# variables
 max_length = 50
 window_size = 0
 all_documents = ["NL.txt", "Backup.txt"]
 current_doc = "NL.txt"
 
 
+# Automatically print header
 def top():
     print("╭" + "─" * max_length + "╮")
 
 
+# Automatically print bottom
 def bottom():
     print("╰" + "─" * max_length + "╯")
 
 
+# Outlines the selected sentence
 def print_line(word1):
     check_word = len(word1)
-    print(("│ "+word1 + "{:>" + str(max_length - check_word)+"}").format(" │"))
+    print(("│ " + word1 + "{:>" + str(max_length - check_word) + "}").format(" │"))
 
 
+# Function that opens and interrogates you on current_doc
 def study_program():
+    # Opens and reads the doc line for line
     f = open(current_doc)
     for line in f:
         word1, word2 = line.strip("\n").split("=")
@@ -25,16 +31,20 @@ def study_program():
         print_line("Translate the word: " + str(word1))
         bottom()
         answer = input("Answer: ")
+        # checks if answer is the same as the current line of document
         if answer == word2:
             top()
             print_line("Correct!")
             bottom()
+        # checks if answer is equal to x if so then returns to menu
         elif answer == "x":
             main()
         else:
+            # if the answer isn't equal to the current line of document it prints the following
             top()
             print_line("Sorry that wasn't the right answer")
             bottom()
+    # When the loop is finished print the following and return to main
     top()
     print_line("Congrats you are done! Enter any key to continue")
     bottom()
@@ -42,35 +52,45 @@ def study_program():
     main()
 
 
+# Function that edits the document by rewriting it with the old text and the new text
 def edit_document():
-    choice = input("Select document: nl ").lower()
+    choice = input("Select document: NL, Backup, fresh ").lower()
+    # declares variable that takes choice as its selected document
     filename = f"{choice}.txt"
+    # opens file and reads it
     with open(filename, 'r') as file:
         lines = file.readlines()
+        # prints each line one by one using enumerate
     for i, line in enumerate(lines):
         words = line.strip().split()
         for j, word in enumerate(words):
             print(f"Current word: '{word}'. Replace it? (Y/N): ", end="")
             answer = input().strip().lower()
+            # checks if answer is y and then replaces the word in the document
             if answer == "y":
                 new_word = input("New word: ")
                 words[j] = new_word
+        # combines the new words with the old ones and replaces the entire document
         lines[i] = ' '.join(words) + '\n'
     with open(filename, 'w') as file:
         file.writelines(lines)
         main()
         bottom()
 
+    # selects a different document
+
 
 def change_list():
     print(all_documents)
     global current_doc
     current_doc = str(input("Change document to: "))
+    # checks if the document exists if so change it
     if current_doc in all_documents:
         top()
-        print_line("Changed document to: "+current_doc)
+        print_line("Changed document to: " + current_doc)
         bottom()
         main()
+    # if document doesn't exist, nothing happens
     else:
         top()
         print_line("Nothing changed... Sending user to menu")
@@ -78,6 +98,8 @@ def change_list():
         current_doc = "NL.txt"
         main()
     return current_doc
+
+# creates a new document and adds it to the list
 
 
 def new_list():
@@ -91,6 +113,8 @@ def new_list():
     all_documents.append(new_doc)
     main()
 
+# adds a new word to the selected document
+
 
 def add_word():
     f = open(current_doc)
@@ -99,13 +123,17 @@ def add_word():
     print_line("Would you like to add a word? (Y/N)")
     bottom()
     answer = input("Answer: ")
+    # checks if answer is y if so it adds a new word to selected document
     if answer == "y":
         f = open(current_doc, 'a')
         new_word = input("New word is: ")
-        f.write(new_word+"\n")
+        f.write(new_word + "\n")
+        add_word()
+        # if user input is "n" returns to menu
+    if answer == "n":
         main()
-    else:
-        main()
+
+# checks what the user wants to select
 
 
 def select():
@@ -129,13 +157,15 @@ def select():
         choice_menu()
         select()
 
+# prints the format/layout of the menu
+
 
 def choice_menu():
     top()
     for i in range(window_size):
         print_line(" ")
     print_line("Welcome to the test program")
-    print_line("Current document is: "+current_doc)
+    print_line("Current document is: " + current_doc)
     print_line("s - study current list")
     print_line("c - change list")
     print_line("n - new list")
